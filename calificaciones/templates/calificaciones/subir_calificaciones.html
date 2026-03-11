@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width:700px; margin:30px auto; padding:30px;">
+    <h2 style="color:#0D099E; text-align:center; margin-bottom:20px;">📤 Subir Calificaciones</h2>
+    
+    <div style="background:#f8f9fa; padding:20px; border-radius:8px; margin-bottom:24px; text-align:center;">
+        <p style="margin:0; color:#666;">
+            Selecciona un archivo en formato <strong>CSV</strong> o <strong>Excel (.xlsx)</strong>
+        </p>
+        <p style="margin:8px 0 0 0; color:#666; font-size:0.9em;">
+            Columnas requeridas: <code style="background:#fff; padding:2px 6px; border-radius:3px;">matricula</code>, 
+            <code style="background:#fff; padding:2px 6px; border-radius:3px;">materia</code>, 
+            <code style="background:#fff; padding:2px 6px; border-radius:3px;">calificacion</code>
+        </p>
+    </div>
+
+    <!-- Formulario de subida -->
+    <div style="background:#fff; padding:24px; border:1px solid #ddd; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.05); text-align:center;">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" name="archivo" accept=".csv,.xlsx" required 
+                   style="padding:10px; margin-bottom:20px; width:100%; max-width:400px; border:2px dashed #0D099E; border-radius:4px;">
+            <br>
+            <button type="submit" class="btn-orange" style="padding:12px 30px; font-size:1em;">
+                📤 Subir Archivo
+            </button>
+        </form>
+    </div>
+
+    <!-- Mensajes de éxito/error -->
+    {% if mensaje %}
+        <div style="background:#d4edda; color:#155724; padding:16px; border-radius:8px; margin-top:20px; border:1px solid #c3e6cb; text-align:center;">
+            <strong>✓ {{ mensaje }}</strong>
+        </div>
+    {% endif %}
+    
+    {% if error %}
+        <div style="background:#f8d7da; color:#721c24; padding:16px; border-radius:8px; margin-top:20px; border:1px solid #f5c6cb; text-align:left;">
+            <strong>⚠️ Error:</strong>
+            <p style="margin:8px 0 0 0;">{{ error }}</p>
+        </div>
+    {% endif %}
+
+    <!-- Botones de navegación -->
+    <div style="text-align:center; margin-top:30px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+        <a href="{% url 'bienvenida' %}" 
+           style="padding:10px 20px; background:#6c757d; color:white; text-decoration:none; border-radius:4px; display:inline-block;">
+            🏠 Volver a inicio
+        </a>
+        <a href="{% url 'calificaciones:registrar_calificacion' %}" 
+           style="padding:10px 20px; background:#17a2b8; color:white; text-decoration:none; border-radius:4px; display:inline-block;">
+            ✏️ Registrar manualmente
+        </a>
+        <a href="{% url 'calificaciones:historial_profesor' %}" 
+           style="padding:10px 20px; background:#0D099E; color:white; text-decoration:none; border-radius:4px; display:inline-block;">
+            📊 Ver historial
+        </a>
+    </div>
+
+    <!-- Información adicional -->
+    <div style="background:#e7f3ff; padding:16px; border-radius:8px; margin-top:24px; border-left:4px solid #0D099E;">
+        <p style="margin:0; font-size:0.9em; color:#004085;">
+            <strong>💡 Consejos:</strong>
+        </p>
+        <ul style="margin:8px 0 0 20px; font-size:0.9em; color:#004085; text-align:left;">
+            <li>Asegúrate de que las matrículas existan en el sistema</li>
+            <li>Las calificaciones deben estar entre 0 y 100</li>
+            <li>Si una calificación ya existe, se actualizará automáticamente</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

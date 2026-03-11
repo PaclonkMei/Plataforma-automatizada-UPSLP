@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width:600px; margin:30px auto; padding:24px;">
+  <h2 style="color:#0D099E; text-align:center; margin-bottom:24px;">✏️ Editar Calificación</h2>
+
+  <!-- Información actual -->
+  <div style="background:#f8f9fa; padding:16px; border-radius:8px; margin-bottom:20px; border-left:4px solid #0D099E;">
+    <p style="margin:0; color:#666;"><strong>Alumno:</strong> {{ calificacion.alumno.get_full_name|default:calificacion.alumno.username }}</p>
+    <p style="margin:8px 0 0 0; color:#666;"><strong>Materia:</strong> {{ calificacion.materia }}</p>
+    <p style="margin:8px 0 0 0; color:#666;"><strong>Calificación actual:</strong> {{ calificacion.nota }}</p>
+  </div>
+
+  <!-- Formulario de edición -->
+  <div style="padding:24px; border:1px solid #ddd; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.05); background-color:#fefefe;">
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div style="text-align:center; margin-top:20px; display:flex; gap:12px; justify-content:center;">
+        <button type="submit" class="btn-orange" style="padding:12px 24px; font-size:1em;">💾 Guardar Cambios</button>
+        <a href="{% url 'calificaciones:historial_profesor' %}" 
+           style="padding:12px 24px; background:#6c757d; color:white; text-decoration:none; border-radius:4px; display:inline-block;">
+          Cancelar
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

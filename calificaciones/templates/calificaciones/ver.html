@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2 style="color:#0D099E; text-align:center;">Mis Calificaciones</h2>
+
+  <p style="text-align:center; font-weight:bold;">
+    Total de calificaciones encontradas: {{ calificaciones|length }}
+  </p>
+
+  <div style="margin-bottom: 20px;">
+    <ul style="list-style-type:none; padding:0;">
+      {% for calificacion in calificaciones %}
+        <li style="background-color:#f9f9f9; border:1px solid #ddd; padding:10px; margin-bottom:5px; border-radius:5px;">
+          <strong>Alumno:</strong> {{ calificacion.alumno.username }} |
+          <strong>Materia:</strong> {{ calificacion.materia }} |
+          <strong>Nota:</strong> {{ calificacion.nota }} |
+          <strong>Fecha:</strong> {{ calificacion.fecha }}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <table style="width:100%; border-collapse:collapse;">
+    <thead>
+      <tr style="background-color:#0D099E; color:white;">
+        <th style="padding:10px; border:1px solid #ccc;">Materia</th>
+        <th style="padding:10px; border:1px solid #ccc;">Nota</th>
+        <th style="padding:10px; border:1px solid #ccc;">Fecha</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for calificacion in calificaciones %}
+      <tr style="background-color:#fff;">
+        <td style="padding:10px; border:1px solid #ccc;">{{ calificacion.materia }}</td>
+        <td style="padding:10px; border:1px solid #ccc;">{{ calificacion.nota }}</td>
+        <td style="padding:10px; border:1px solid #ccc;">{{ calificacion.fecha }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="3" style="text-align:center; padding:10px; border:1px solid #ccc;">No tienes calificaciones registradas.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width:600px; margin:30px auto; padding:24px;">
+  <h2 style="color:#0D099E; text-align:center; margin-bottom:24px;">Registrar Calificación</h2>
+
+  <!-- Mensaje de éxito -->
+  {% if mensaje_exito %}
+  <div style="background:#d4edda; color:#155724; padding:16px; border-radius:8px; margin-bottom:20px; text-align:center; border:1px solid #c3e6cb;">
+    <strong>{{ mensaje_exito }}</strong>
+  </div>
+  {% endif %}
+
+  <!-- Formulario -->
+  <div style="padding:24px; border:1px solid #ddd; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.05); background-color:#fefefe;">
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div style="text-align:center; margin-top:20px;">
+        <button type="submit" class="btn-orange" style="padding:12px 24px; font-size:1em;">💾 Guardar Calificación</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Botones de navegación -->
+  <div style="text-align:center; margin-top:20px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+    <a href="{% url 'bienvenida' %}" 
+       style="padding:10px 20px; background:#6c757d; color:white; text-decoration:none; border-radius:4px; display:inline-block;">
+      🏠 Volver a inicio
+    </a>
+    <a href="{% url 'calificaciones:subir_calificaciones' %}" 
+       style="padding:10px 20px; background:#17a2b8; color:white; text-decoration:none; border-radius:4px; display:inline-block;">
+      📤 Subir archivo (CSV/Excel)
+    </a>
+    <a href="{% url 'calificaciones:historial_profesor' %}" 
+       style="padding:10px 20px; background:#0D099E; color:white; text-decoration:none; border-radius:4px; display:inline-block;">
+      📊 Ver historial
+    </a>
+  </div>
+</div>
+{% endblock %}
