@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
+<script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
 <div style="text-align:center; padding:40px;">
   <h2 style="color:#0D099E; font-size:2em;">
     ¡Bienvenido {{ usuario.first_name|default:usuario.username }}!
@@ -9,24 +13,58 @@
     Tu rol es: <strong style="color:#F4640B;">{{ usuario.rol|title }}</strong>
   </p>
 
+  <div id="react-widget-container" style="margin: 20px 0;"></div>
+
   {% if usuario.rol == 'alumno' %}
     <a href="/calificaciones/ver/" class="btn-orange" style="font-size:1em; padding:12px 20px; text-decoration:none; margin:8px;">Ver mis calificaciones</a>
 
   {% elif usuario.rol == 'profesor' %}
-    <!-- Botón para registrar calificación manual -->
     <a href="/calificaciones/registrar/" class="btn-orange" style="font-size:1em; padding:12px 20px; text-decoration:none; margin:8px; display:inline-block;">Registrar calificación</a>
     
-    <!-- Botón para subir archivo CSV/Excel -->
     <a href="/calificaciones/subir/" class="btn-orange" style="font-size:1em; padding:12px 20px; text-decoration:none; margin:8px; display:inline-block;">Subir archivo (CSV/Excel)</a>
     
-    <!-- ✅ Nuevo botón para ver historial y estadísticas -->
     <a href="{% url 'calificaciones:historial_profesor' %}" class="btn-orange" style="font-size:1em; padding:12px 20px; text-decoration:none; margin:8px; display:inline-block;">📊 Ver historial y estadísticas</a>
 
   {% elif usuario.rol == 'administrador' %}
-    <!-- Botón para administrar usuarios -->
     <a href="{% url 'usuarios:listar' %}" class="btn-orange" style="font-size:1em; padding:12px 20px; text-decoration:none;">
       Administrar usuarios
     </a>
   {% endif %}
 </div>
+
+{% verbatim %}
+<script type="text/babel">
+  function NotasRapidas() {
+    // Iniciamos el estado buscando si ya hay una nota guardada en el navegador
+    const [nota, setNota] = React.useState(localStorage.getItem('notaDashboard') || '');
+
+    // Esta función se ejecuta cada vez que el usuario teclea algo
+    const manejarCambio = (evento) => {
+      const texto = evento.target.value;
+      setNota(texto); // Actualiza lo que se ve en pantalla
+      localStorage.setItem('notaDashboard', texto); // Lo guarda en la memoria del navegador
+    };
+
+    return (
+      <div style={{ padding: '15px', border: '1px solid #ffe69c', borderRadius: '8px', display: 'inline-block', backgroundColor: '#fff3cd', width: '300px', textAlign: 'left', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
+        <h4 style={{ color: '#664d03', margin: '0 0 10px 0' }}>📝 Mis Notas Rápidas</h4>
+        <textarea 
+          value={nota}
+          onChange={manejarCambio}
+          placeholder="Escribe un recordatorio aquí..."
+          style={{ width: '100%', height: '80px', border: 'none', backgroundColor: 'transparent', resize: 'none', outline: 'none', color: '#664d03', fontFamily: 'inherit' }}
+        />
+        <div style={{ fontSize: '0.8em', color: '#997404', textAlign: 'right', marginTop: '5px' }}>
+          Se guarda automáticamente
+        </div>
+      </div>
+    );
+  }
+
+  // Renderizar el componente en el div que creamos arriba
+  const root = ReactDOM.createRoot(document.getElementById('react-widget-container'));
+  root.render(<NotasRapidas />);
+</script>
+{% endverbatim %}
+
 {% endblock %}
