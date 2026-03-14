@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="padding:24px;">
+    <h2 style="color:#0D099E; margin-bottom:20px;">📊 Historial y Estadísticas de Calificaciones</h2>
+
+    <!-- Mensajes de éxito/error -->
+    {% if messages %}
+        {% for message in messages %}
+        <div style="background:#d4edda; color:#155724; padding:12px; border-radius:4px; margin-bottom:16px; text-align:center; border:1px solid #c3e6cb;">
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Panel de Estadísticas -->
+    <div style="background:#f8f9fa; padding:20px; border-radius:8px; margin-bottom:24px; display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:16px;">
+        <div style="text-align:center;">
+            <p style="margin:0; color:#666; font-size:0.9em;">Total Registros</p>
+            <p style="margin:4px 0 0 0; font-size:1.8em; font-weight:bold; color:#0D099E;">{{ stats.total }}</p>
+        </div>
+        <div style="text-align:center;">
+            <p style="margin:0; color:#666; font-size:0.9em;">Promedio</p>
+            <p style="margin:4px 0 0 0; font-size:1.8em; font-weight:bold; color:#28a745;">
+                {% if stats.promedio %}{{ stats.promedio|floatformat:2 }}{% else %}0{% endif %}
+            </p>
+        </div>
+        <div style="text-align:center;">
+            <p style="margin:0; color:#666; font-size:0.9em;">Máxima</p>
+            <p style="margin:4px 0 0 0; font-size:1.8em; font-weight:bold; color:#17a2b8;">
+                {% if stats.maximo %}{{ stats.maximo }}{% else %}0{% endif %}
+            </p>
+        </div>
+        <div style="text-align:center;">
+            <p style="margin:0; color:#666; font-size:0.9em;">Mínima</p>
+            <p style="margin:4px 0 0 0; font-size:1.8em; font-weight:bold; color:#ffc107;">
+                {% if stats.minimo %}{{ stats.minimo }}{% else %}0{% endif %}
+            </p>
+        </div>
+        <div style="text-align:center;">
+            <p style="margin:0; color:#666; font-size:0.9em;">Reprobados</p>
+            <p style="margin:4px 0 0 0; font-size:1.8em; font-weight:bold; color:#dc3545;">{{ reprobados }}</p>
+        </div>
+        <div style="text-align:center;">
+            <p style="margin:0; color:#666; font-size:0.9em;">% Reprobación</p>
+            <p style="margin:4px 0 0 0; font-size:1.8em; font-weight:bold; color:#F4640B;">{{ porcentaje_reprobacion }}%</p>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div style="background:#fff; padding:20px; border:1px solid #ddd; border-radius:8px; margin-bottom:24px;">
+        <h3 style="color:#0D099E; margin-top:0; margin-bottom:16px;">🔍 Filtros</h3>
+        <form method="get" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px; align-items:end;">
+            
+            <div>
+                <label style="display:block; margin-bottom:4px; font-weight:bold; font-size:0.9em;">Alumno:</label>
+                <input type="text" name="alumno" value="{{ alumno_filtro }}" placeholder="Nombre o matrícula" 
+                       style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+            </div>
+
+            <div>
+                <label style="display:block; margin-bottom:4px; font-weight:bold; font-size:0.9em;">Materia:</label>
+                <input type="text" name="materia" value="{{ materia_filtro }}" placeholder="Nombre de materia" 
+                       style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+            </div>
+
+            <div>
+                <label style="display:block; margin-bottom:4px; font-weight:bold; font-size:0.9em;">Fecha desde:</label>
+                <input type="date" name="fecha_desde" value="{{ fecha_desde }}" 
+                       style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+            </div>
+
+            <div>
+                <label style="display:block; margin-bottom:4px; font-weight:bold; font-size:0.9em;">Fecha hasta:</label>
+                <input type="date" name="fecha_hasta" value="{{ fecha_hasta }}" 
+                       style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+            </div>
+
+            <div style="display:flex; gap:8px;">
+                <button type="submit" class="btn-orange" style="padding:8px 16px; flex:1;">Filtrar</button>
+                <a href="{% url 'calificaciones:historial_profesor' %}" 
+                   style="padding:8px 16px; background:#6c757d; color:white; text-decoration:none; border-radius:4px; text-align:center; flex:1;">
+                    Limpiar
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Botones de acción -->
+    <div style="margin-bottom:16px; display:flex; gap:12px; flex-wrap:wrap;">
+        <a href="{% url 'calificaciones:exportar_historial' %}?alumno={{ alumno_filtro }}&materia={{ materia_filtro }}&fecha_desde={{ fecha_desde }}&fecha_hasta={{ fecha_hasta }}" 
+           class="btn-orange" style="padding:10px 20px; text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+            📥 Exportar a Excel
+        </a>
+        <a href="{% url 'bienvenida' %}" 
+           style="padding:10px 20px; background:#6c757d; color:white; text-decoration:none; border-radius:4px; display:inline-flex; align-items:center; gap:8px;">
+            🏠 Volver a inicio
+        </a>
+    </div>
+
+    <!-- Tabla de resultados -->
+    {% if page_obj.object_list %}
+    <div style="overflow-x:auto;">
+        <table border="1" cellpadding="10" cellspacing="0" style="width:100%; border-collapse:collapse; background:#fff;">
+            <thead style="background:#0D099E; color:white;">
+                <tr>
+                    <th style="text-align:left;">Matrícula</th>
+                    <th style="text-align:left;">Alumno</th>
+                    <th style="text-align:left;">Materia</th>
+                    <th style="text-align:center;">Calificación</th>
+                    <th style="text-align:center;">Fecha</th>
+                    <th style="text-align:center;">Estado</th>
+                    <th style="text-align:center; width:150px;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cal in page_obj %}
+                {% if cal.nota < 60 %}
+                <tr style="background:#ffebee;">
+                {% else %}
+                <tr>
+                {% endif %}
+                    <td>{{ cal.alumno.username }}</td>
+                    <td>{{ cal.alumno.get_full_name|default:cal.alumno.username }}</td>
+                    <td>{{ cal.materia }}</td>
+                    {% if cal.nota >= 90 %}
+                    <td style="text-align:center; font-weight:bold; color:#28a745;">
+                    {% elif cal.nota >= 70 %}
+                    <td style="text-align:center; font-weight:bold; color:#17a2b8;">
+                    {% elif cal.nota >= 60 %}
+                    <td style="text-align:center; font-weight:bold; color:#ffc107;">
+                    {% else %}
+                    <td style="text-align:center; font-weight:bold; color:#dc3545;">
+                    {% endif %}
+                        {{ cal.nota }}
+                    </td>
+                    <td style="text-align:center;">{{ cal.fecha|date:"d/m/Y" }}</td>
+                    <td style="text-align:center;">
+                        {% if cal.nota >= 60 %}
+                            <span style="color:#28a745; font-weight:bold;">✓ Aprobado</span>
+                        {% else %}
+                            <span style="color:#dc3545; font-weight:bold;">✗ Reprobado</span>
+                        {% endif %}
+                    </td>
+                    <td style="text-align:center;">
+                        <a href="{% url 'calificaciones:editar_calificacion' cal.id %}" 
+                           style="padding:6px 12px; background:#17a2b8; color:white; text-decoration:none; border-radius:4px; font-size:0.85em; margin-right:4px; display:inline-block;">
+                            ✏️ Editar
+                        </a>
+                        <a href="{% url 'calificaciones:eliminar_calificacion' cal.id %}" 
+                           style="padding:6px 12px; background:#dc3545; color:white; text-decoration:none; border-radius:4px; font-size:0.85em; display:inline-block;">
+                            🗑️ Eliminar
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Paginación -->
+    {% if page_obj.has_other_pages %}
+    <div style="margin-top:20px; text-align:center;">
+        <div style="display:inline-flex; gap:8px; align-items:center;">
+            {% if page_obj.has_previous %}
+                <a href="?page=1&alumno={{ alumno_filtro }}&materia={{ materia_filtro }}&fecha_desde={{ fecha_desde }}&fecha_hasta={{ fecha_hasta }}" 
+                   style="padding:8px 12px; background:#0D099E; color:white; text-decoration:none; border-radius:4px;">
+                    « Primera
+                </a>
+                <a href="?page={{ page_obj.previous_page_number }}&alumno={{ alumno_filtro }}&materia={{ materia_filtro }}&fecha_desde={{ fecha_desde }}&fecha_hasta={{ fecha_hasta }}" 
+                   style="padding:8px 12px; background:#0D099E; color:white; text-decoration:none; border-radius:4px;">
+                    ‹ Anterior
+                </a>
+            {% endif %}
+
+            <span style="padding:8px 16px; background:#f8f9fa; border-radius:4px; font-weight:bold;">
+                Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&alumno={{ alumno_filtro }}&materia={{ materia_filtro }}&fecha_desde={{ fecha_desde }}&fecha_hasta={{ fecha_hasta }}" 
+                   style="padding:8px 12px; background:#0D099E; color:white; text-decoration:none; border-radius:4px;">
+                    Siguiente ›
+                </a>
+                <a href="?page={{ page_obj.paginator.num_pages }}&alumno={{ alumno_filtro }}&materia={{ materia_filtro }}&fecha_desde={{ fecha_desde }}&fecha_hasta={{ fecha_hasta }}" 
+                   style="padding:8px 12px; background:#0D099E; color:white; text-decoration:none; border-radius:4px;">
+                    Última »
+                </a>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div style="text-align:center; padding:40px; background:#f8f9fa; border-radius:8px;">
+        <p style="font-size:1.2em; color:#666; margin:0;">
+            📋 No hay calificaciones registradas con los filtros aplicados.
+        </p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

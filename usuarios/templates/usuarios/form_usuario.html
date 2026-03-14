@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width:600px; margin:auto; padding:30px;">
+  <h2 style="color:#0D099E; margin-bottom:10px;">{{ accion }} usuario</h2>
+  <p style="margin-bottom:20px;">Completa la información del usuario.</p>
+
+  <form method="post" style="margin-top:10px;">
+    {% csrf_token %}
+
+    <!-- Campo Username -->
+    <div style="margin-bottom:12px;">
+      <label>Username</label><br>
+      {{ form.username }}
+      {% if form.username.errors %}
+        <div style="color:#b90e0e; font-size:0.9em;">{{ form.username.errors|striptags }}</div>
+      {% endif %}
+    </div>
+
+    <!-- Campo Nombre -->
+    <div style="margin-bottom:12px;">
+      <label>Nombre</label><br>
+      {{ form.first_name }}
+      {% if form.first_name.errors %}
+        <div style="color:#b90e0e; font-size:0.9em;">{{ form.first_name.errors|striptags }}</div>
+      {% endif %}
+    </div>
+
+    <!-- Campo Apellido -->
+    <div style="margin-bottom:12px;">
+      <label>Apellido</label><br>
+      {{ form.last_name }}
+      {% if form.last_name.errors %}
+        <div style="color:#b90e0e; font-size:0.9em;">{{ form.last_name.errors|striptags }}</div>
+      {% endif %}
+    </div>
+
+    <!-- Campo Email -->
+    <div style="margin-bottom:12px;">
+      <label>Email</label><br>
+      {{ form.email }}
+      {% if form.email.errors %}
+        <div style="color:#b90e0e; font-size:0.9em;">{{ form.email.errors|striptags }}</div>
+      {% endif %}
+    </div>
+
+    <!-- Campo Rol -->
+    <div style="margin-bottom:12px;">
+      <label>Rol</label><br>
+      {{ form.rol }}
+      {% if form.rol.errors %}
+        <div style="color:#b90e0e; font-size:0.9em;">{{ form.rol.errors|striptags }}</div>
+      {% endif %}
+    </div>
+
+    <!-- Campos de contraseña (solo al crear) -->
+    {% if form.password1 %}
+    <div style="margin-bottom:12px;">
+      <label>Contraseña</label><br>
+      {{ form.password1 }}
+      <small style="color:#666; font-size:0.85em;">Mínimo 8 caracteres</small>
+      {% if form.password1.errors %}
+        <div style="color:#b90e0e; font-size:0.9em;">{{ form.password1.errors|striptags }}</div>
+      {% endif %}
+    </div>
+
+    <div style="margin-bottom:12px;">
+      <label>Confirmar contraseña</label><br>
+      {{ form.password2 }}
+      {% if form.password2.errors %}
+        <div style="color:#b90e0e; font-size:0.9em;">{{ form.password2.errors|striptags }}</div>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Errores generales del formulario -->
+    {% if form.non_field_errors %}
+      <div style="color:#b90e0e; font-size:0.9em; margin-bottom:12px;">
+        {{ form.non_field_errors|striptags }}
+      </div>
+    {% endif %}
+
+    <!-- Botones -->
+    <div style="margin-top:18px;">
+      <button type="submit" class="btn-orange" style="padding:10px 18px;">💾 Guardar</button>
+      <a href="{% url 'usuarios:listar' %}" style="padding:10px 18px; background:#6c757d; color:white; text-decoration:none; border-radius:4px; display:inline-block; margin-left:8px;">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="text-align:center; padding:40px;">
+  <h2 style="color:#0D099E; font-size:2em;">
+    ¡Bienvenido {{ usuario.first_name|default:usuario.username }}!
+  </h2>
+  <p style="font-size:1.2em; margin-bottom:30px;">
+    Tu rol es: <strong style="color:#F4640B;">{{ usuario.rol|title }}</strong>
+  </p>
+
+  {% if usuario.rol == 'alumno' %}
+    <a href="/calificaciones/ver/" class="btn-orange" style="font-size:1em; padding:12px 20px; text-decoration:none; margin:8px;">Ver mis calificaciones</a>
+
+  {% elif usuario.rol == 'profesor' %}
+    <!-- Botón para registrar calificación manual -->
+    <a href="/calificaciones/registrar/" class="btn-orange" style="font-size:1em; padding:12px 20px; text-decoration:none; margin:8px; display:inline-block;">Registrar calificación</a>
+    
+    <!-- Botón para subir archivo CSV/Excel -->
+    <a href="/calificaciones/subir/" class="btn-orange" style="font-size:1em; padding:12px 20px; text-decoration:none; margin:8px; display:inline-block;">Subir archivo (CSV/Excel)</a>
+    
+    <!-- ✅ Nuevo botón para ver historial y estadísticas -->
+    <a href="{% url 'calificaciones:historial_profesor' %}" class="btn-orange" style="font-size:1em; padding:12px 20px; text-decoration:none; margin:8px; display:inline-block;">📊 Ver historial y estadísticas</a>
+
+  {% elif usuario.rol == 'administrador' %}
+    <!-- Botón para administrar usuarios -->
+    <a href="{% url 'usuarios:listar' %}" class="btn-orange" style="font-size:1em; padding:12px 20px; text-decoration:none;">
+      Administrar usuarios
+    </a>
+  {% endif %}
+</div>
+{% endblock %}

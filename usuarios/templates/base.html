@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}Plataforma Académica{% endblock %}</title>
+  <style>
+    body {
+      background-color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .navbar {
+      background-color: #0D099E;
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      margin: 0 10px;
+      font-weight: bold;
+    }
+    .navbar a:hover {
+      color: #F4640B;
+    }
+    .content {
+      padding: 30px;
+    }
+    .btn-orange {
+      background-color: #F4640B;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-orange:hover {
+      background-color: #d9540a;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <div>
+      <a href="{% url 'inicio_publico' %}">🏫 Plataforma Académica Automatizada</a>
+    </div>
+    <div>
+      {% if user.is_authenticated %}
+        <a href="{% url 'logout' %}">Cerrar sesión</a>
+      {% else %}
+        <a href="{% url 'login' %}">Iniciar sesión</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="content">
+    {% block content %}
+    {% endblock %}
+  </div>
+</body>
+</html>

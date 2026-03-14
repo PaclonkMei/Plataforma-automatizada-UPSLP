@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width:600px; margin:60px auto; padding:30px; text-align:center;">
+  <h2 style="color:#dc3545; margin-bottom:20px;">🗑️ Confirmar Eliminación</h2>
+  
+  <!-- Información de la calificación a eliminar -->
+  <div style="background:#fff3cd; border:1px solid #ffc107; padding:20px; border-radius:8px; margin-bottom:24px;">
+    <p style="font-size:1.1em; margin:0 0 12px 0; color:#856404;">
+      ¿Estás seguro de que deseas eliminar esta calificación?
+    </p>
+    <div style="background:#fff; padding:16px; border-radius:4px; margin-top:16px; text-align:left;">
+      <p style="margin:0; color:#333;"><strong>Alumno:</strong> {{ calificacion.alumno.get_full_name|default:calificacion.alumno.username }}</p>
+      <p style="margin:8px 0 0 0; color:#333;"><strong>Matrícula:</strong> {{ calificacion.alumno.username }}</p>
+      <p style="margin:8px 0 0 0; color:#333;"><strong>Materia:</strong> {{ calificacion.materia }}</p>
+      <p style="margin:8px 0 0 0; color:#333;"><strong>Calificación:</strong> {{ calificacion.nota }}</p>
+      <p style="margin:8px 0 0 0; color:#333;"><strong>Fecha:</strong> {{ calificacion.fecha|date:"d/m/Y" }}</p>
+    </div>
+  </div>
+  
+  <p style="color:#666; margin-bottom:30px; font-size:0.95em;">
+    ⚠️ Esta acción no se puede deshacer.
+  </p>
+
+  <!-- Formulario de confirmación -->
+  <form method="post" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" 
+            style="padding:12px 24px; background:#dc3545; color:white; border:none; border-radius:4px; cursor:pointer; font-size:1em; margin-right:12px; font-weight:bold;">
+      🗑️ Sí, eliminar calificación
+    </button>
+  </form>
+  
+  <a href="{% url 'calificaciones:historial_profesor' %}" 
+     style="padding:12px 24px; background:#6c757d; color:white; text-decoration:none; border-radius:4px; display:inline-block;">
+    Cancelar
+  </a>
+</div>
+{% endblock %}
