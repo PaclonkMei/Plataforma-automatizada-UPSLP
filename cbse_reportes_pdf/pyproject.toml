@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cbse-reportes-pdf"
+version = "0.1.0"
+description = "CBSE PARA reuso: Generador reusable de reportes PDF"
+requires-python = ">=3.10"
+dependencies = ["reportlab>=4.0.0"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
