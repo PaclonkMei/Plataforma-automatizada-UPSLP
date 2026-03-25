@@ -88,11 +88,16 @@ LOGOUT_REDIRECT_URL = '/login/'
 # ✅ Permitir logout con GET (solo para desarrollo)
 LOGOUT_ALLOWED_METHODS = ['GET', 'POST']
 
-# Configuración de correo electrónico (SMTP con Outlook)
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp-mail.outlook.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'plataforma.academica2025@outlook.com'
-EMAIL_HOST_PASSWORD = 'PlataformaAcademica#123'
-DEFAULT_FROM_EMAIL = 'plataforma.academica2025@outlook.com'
+# Configuración de correo electrónico (Brevo API - usar variables de entorno)
+import os
+
+BREVO_API_KEY = os.environ.get('BREVO_API_KEY', '')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'aletsby@outlook.com')
+
+# Para compatibilidad con logic SMTP previo (opcional, no obligatorio)
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp-mail.outlook.com')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'plataforma.academica2025@outlook.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
